@@ -15,7 +15,7 @@ exports.run = async (client, message, args) => {
 
     var embed = new Discord.MessageEmbed()//pythonic
         .addField("Rütbeler", `
-    ** **${list.splice(0, 10).map((item, index) => `\`${index + 1}.\` <@&${item.Id}>: \`${item.Invite} Davete\``).join("\n")}//pythonic
+    ** **${list.splice(0, 10).map((item, index) => `\`${index + 1}.\` <@&${item.Id}>: \`${item.Invite} Davete\``).join("\n")}
     `);
 
     message.channel.send(embed);
