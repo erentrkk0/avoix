@@ -84,12 +84,3 @@ module.exports = message => {
 
 };
 
-  let prefix;
-  
-  if (db.has(`prefix_${message.guild.id}`) === true) {
-    prefix = db.fetch(`prefix_${message.guild.id}`)
-  }
-    
-  if (db.has(`prefix_${message.guild.id}`) === false) {
-    prefix = ayarlar.prefix
-  }
