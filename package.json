@@ -1,7 +1,7 @@
 {
-  "main": "bot.js",
+  "main": "shard.js",
   "scripts": {
-    "start": "node bot.js"
+    "start": "node shard.js"
   },
   "engines": {
     "node": "12.x"
