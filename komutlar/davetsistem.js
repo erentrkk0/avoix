@@ -23,7 +23,7 @@ collector.on('collect', (reaction, user) => {
      if(reaction.emoji.name == "➕") {
     const kobscode = new Discord.MessageEmbed()
       .setColor("BLUE")
- .addField("**Davet Komutları**", `\n**!**__rütbe-ekle @rol davet__ = **__Rütbe Ekler__** \n**!**__rütbeler__ = **__Rütbeleri Gösterir 1 Den 10'a Kadar__** \n**!**__rütbe-sıfırla__ = **__Rütbeyi Sıfırlar.__** \n**!**__davetleri-sıfırla__ = **__Davetleri Sıfırlar.__** \n**!**__top__ = **__Lider Tablosunu Gösterir.__** \n**!**__davetlerim__ = **__Davetlerinizi Gösterir.__** \n**!**__bonus-ekle__ = **__Bonus Ekler.__** \n**!**__davet-kanal #kanal__ = **__Davet Kanalını Ayarlar.__** \n**!**__davet-kanal-sıfırla__ = **__Davet Kanalını Sıfırlar.__**`)
+ .addField("**Davet Komutları**", `\n**a!**__rütbe-ekle @rol davet__ = **__Rütbe Ekler__** \n**a!**__rütbeler__ = **__Rütbeleri Gösterir 1 Den 10'a Kadar__** \n**a!**__rütbe-sıfırla__ = **__Rütbeyi Sıfırlar.__** \n**a!**__davetleri-sıfırla__ = **__Davetleri Sıfırlar.__** \n**a!**__top__ = **__Lider Tablosunu Gösterir.__** \n**a!**__davetlerim__ = **__Davetlerinizi Gösterir.__** \n**a!**__bonus-ekle__ = **__Bonus Ekler.__** \n**a!**__davet-kanal #kanal__ = **__Davet Kanalını Ayarlar.__** \n**a!**__davet-kanal-sıfırla__ = **__Davet Kanalını Sıfırlar.__**`)
 .setImage("https://cdn.discordapp.com/attachments/772883062085386282/775006230082748436/3.png")
   .setThumbnail(client.user.avatarURL())
  menü.edit(kobscode)
@@ -42,12 +42,12 @@ collector.on('end', collected => {
 exports.conf = {
  enabled: true,
  guildOnly: true,
- aliases: ['help'],
+ aliases: ['invitehelp'],
  permLevel: 0,
 };
 
 exports.help = {
- name: 'yardım',
- description: '',
- usage: ''
+ name: 'davetsistemi',
+ description: 'davetsistemi işte',
+ usage: 'davetsistemi'
 };
