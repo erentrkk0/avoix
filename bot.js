@@ -444,7 +444,9 @@ let kanal = await db.fetch(`antiraidK_${member.guild.id}`)== "anti-raid-aç"
 });
 
 
-
+client.on('message', async msg => {
+  if (msg.content === `<@id>`) return msg.channel.send(`Prefixim a!`);
+});
 
 
 client.login(ayarlar.token);
