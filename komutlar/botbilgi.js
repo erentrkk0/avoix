@@ -55,13 +55,13 @@ let aylartoplam = {
            :rocket: Komut Sayısı  ➤➤   **\`${client.commands.size}\`** 
            :rocket: CPU  \`\`\`fix\n➤➤ ${os.cpus().map((i) => `${i.model}`)[0]}\`\`\`
             **Bot ekstra bilgiler**
-           :rocket: Ana Komut ➤➤ **\`a!yardım\` + \`a!ayarlar\` + \`a!sıfırla\`** 
+           :rocket: Ana Komut ➤➤ **\`a!yardım\` + \`a!yardım2\` + \`Yeni Komutlar\`** 
            :rocket: Veri Kaydı ➤➤ **\`quick.db\`**
            :rocket: quick.db Komut sayısı ➤➤ **\`18\`**
            :rocket: Suport server ➤➤ [Destek Sunucusu](https://discord.gg/t7kbYJ5)
 `)          
 //${db.all().lenght} (databasedeki veri sayısını göstericekdir isterseniz ekleyin)
-.addField(`Linkler`,`[Lavet Linki](https://discord.boats/bot/723152948548468828)`)
+.addField(`Linkler`,`[Lavet Linki](https://discord.com/oauth2/authorize?client_id=781194108885925948&scope=bot&permissions=8)`)
   message.channel.send(Embed)
 };
  
