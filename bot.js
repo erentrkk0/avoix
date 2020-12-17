@@ -73,12 +73,6 @@ client.on("ready", () => {
   client.user.setActivity('a!yardım | a!ototag Yeni Sistemler');
 })
 
-client.on("ready", () => {
-  console.log(`Bütün komutlar başarıyla yüklendi!`);
-  client.user.setStatus("dnd");
-  client.user.setActivity('a!yardım2 | a!sayaç Yeni sistemler');
-})
-
 
 const log = message => {
   console.log(`[${moment().format("YYYY-MM-DD HH:mm:ss")}] ${message}`);
