@@ -70,7 +70,13 @@ client.on("message", message => {
 client.on("ready", () => {
   console.log(`Bütün komutlar başarıyla yüklendi!`);
   client.user.setStatus("dnd");
-  client.user.setActivity('a!yardım | a!ototag');
+  client.user.setActivity('a!yardım | a!ototag Yeni Sistemler');
+})
+
+client.on("ready", () => {
+  console.log(`Bütün komutlar başarıyla yüklendi!`);
+  client.user.setStatus("dnd");
+  client.user.setActivity('a!yardım2 | a!sayaç Yeni sistemler');
 })
 
 
