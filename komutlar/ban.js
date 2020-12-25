@@ -14,13 +14,13 @@ exports.run = async (bot, message, args, client) => {
   
 let db = require('quick.db')
 let data2 = await db.fetch(`ban.yetkilirole_${message.guild.id}`)
-if(!data2)  return message.channel.send(x2 + ` Ban yetkilisi rolünü bulamadım.\nBilgi almak için: .yardım ban-yetkilisi`)
+if(!data2)  return message.channel.send(x2 + ` Ban yetkilisi rolünü bulamadım.\nBilgi almak için: a!ban-yetkilisi`)
 let data3 = await db.fetch(`banlog_${message.guild.id}`)
-if(!data3)  return message.channel.send(x2 + ` Ban kanalını bulamadım.\nBilgi almak için: .yardım ban-kanal`)
+if(!data3)  return message.channel.send(x2 + ` Ban kanalını bulamadım.\nBilgi almak için: a!ban-kanal`)
 let yetkili = message.guild.roles.cache.get(data2)
-if(!yetkili) return message.channel.send(x2 + ` Ban yetkilisi ayarlı değil?!\nBilgi almak için: .yardım ban-yetkilisi`)
+if(!yetkili) return message.channel.send(x2 + ` Ban yetkilisi ayarlı değil?!\nBilgi almak için: a!ban-yetkilisi`)
 let kanal = message.guild.channels.cache.get(data3)
-if(!kanal) return message.channel.send(x2 + ` Ban kanalı ayarlı değil?!\nBilgi almak için: .yardım ban-kanal`)
+if(!kanal) return message.channel.send(x2 + ` Ban kanalı ayarlı değil?!\nBilgi almak için: a!ban-kanal`)
   
 
    if (!message.member.roles.has(`${yetkili.id}`)) return message.channel.send(`**${ayarlar.prefix}ban** isimli komutu kullanabilmek için ${yetkili} rolüne sahip olman gerekiyor.`)
