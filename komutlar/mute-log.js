@@ -1,22 +1,44 @@
-const Discord = require('discord.js');
-const data = require('quick.db');
+const Discord = require('discord.js')
+const db = require('quick.db');
 
 exports.run = async (client, message, args) => {
-
-  if(!message.member.permissions.has('ADMINISTRATOR')) return message.channel.send(new Discord.MessageEmbed().setThumbnail(message.author.avatarURL() ? message.author.avatarURL({dynamic: true}) : 'https://cdn.discordapp.com/attachments/761314429589258315/762047392651411487/erentr1.jpg').setImage('https://cdn.glitch.com/0c8ef551-5187-48a8-9daf-f2cc35630f21%2Fyoneticigif.gif').setTitle('Bir hata oldu!').setDescription(`• \`${client.ayarlar.prefix}mute-log \` **kullanmak için,** \`Yönetici\` **yetkisine sahip olman gerekiyor.**`));
-  if(!message.mentions.channels.first()) return message.channel.send(new Discord.MessageEmbed().setColor('#00001').setTitle('Bir hata oldu!').setDescription('Bir kanal etiketlemeyi unuttunuz.'));
-  let mentionChannel = message.mentions.channels.first();
-  data.set(`mute.log.${message.guild.id}`, mentionChannel.id);
-  message.channel.send(new Discord.MessageEmbed().setTitle('İşte bu kadar!').setDescription(`Sesli mute sistemi başarıyla ${mentionChannel} kanalı olarak seçtiniz.`));
-
-};
+  
+ if (!message.member.hasPermission("MANAGE_MESSAGES")) {
+  const bilgi = new Discord.RichEmbed()
+  .setDescription('Bu komutu kullanabilmek için **Mesajları Yönet** yetkisine sahip olmanız gerek.')
+  .setColor("0000A0")
+return message.channel.sendEmbed(bilgi).then(m => m.delete(150000)); return
+       }
+  let mlog = message.mentions.channels.first()
+  let sıfırla = db.fetch(`mlog_${message.guild.id}`)
+if(args[0] === "sıfırla") {
+    if(!sıfırla) {
+      message.channel.send(`Mute Log Kanalı zaten ayarlı değil.`)
+                     
+      return
+    }
+    db.delete(`mlog_${message.guild.id}`)
+    message.channel.send(`Mute Log Kanalı başarıyla sıfırlandı.`)
+                
+    return
+  }
+  if (!mlog) {
+    return message.channel.send(
+    `Mute Log Olacak Kanalı etiketlemelisin.`)                       
+  }
+  db.set(`mlog_${message.guild.id}`, mlog.id)
+  message.channel.send(`✅|Mute Log Kanalı başarıyla ${mlog} olarak ayarlandı.`)
+  };
+    
 exports.conf = {
-  enabled: true,
-  guildOnly: true,
-  aliases: [],
-  permLevel: 0
+    enabled: true,
+    guildOnly: true,
+    aliases: ['mute-log'],
+    permLevel: 0
 }
 
 exports.help = {
-  name: 'mute-log'
-};
+    name: 'mute-log-ayarla',
+    description: 'Mute Logu Ayarlar.',
+    usage: '-mute-log #kanal'
+}
