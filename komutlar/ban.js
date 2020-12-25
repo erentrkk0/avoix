@@ -23,7 +23,7 @@ let kanal = message.guild.channels.cache.get(data3)
 if(!kanal) return message.channel.send(x2 + ` Ban kanalı ayarlı değil?!\nBilgi almak için: a!ban-log`)
   
 
-   if (!message.member.roles.has(`${yetkili.id}`)) return message.channel.send(`**${ayarlar.prefix}ban** isimli komutu kullanabilmek için ${yetkili} rolüne sahip olman gerekiyor.`)
+   if (!message.member.roles.cache.has(`${yetkili.id}`)) return message.channel.send(`**${ayarlar.prefix}ban** isimli komutu kullanabilmek için ${yetkili} rolüne sahip olman gerekiyor.`)
     let reason = args.slice(1).join(' ')
     
     if (!args[0]) return message.channel.send(x2 + ` Birini etiketlemeyi unuttun!`)
