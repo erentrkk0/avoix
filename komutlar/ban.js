@@ -3,11 +3,11 @@ const db = require('quick.db')
 const client = new Discord.Client();
 
 exports.run = async (client, message, args) => {
- if(!message.member.roles.cache.has(db.fetch(`ban.etkilisi.{message.guild.id}`))) {
+ if(!message.member.roles.cache.has(db.fetch(`ban.yetkilisi.{message.guild.id}`))) {
     return message.channel.send("Bu Komutu Kullanabilmek İçin Gerekli Yetkiye Sahip Değilsin!");
    }
   
-   const codework = await db.fetch(`banlog${message.guild.id}`)
+   const codework = await db.fetch(`banlog.${message.guild.id}`)
    if(codework == null) return message.channel.send('Lütfen BanLog Kanalı Ayarla!');
   
   let member = message.member
@@ -30,7 +30,7 @@ exports.run = async (client, message, args) => {
     .addField('Banlanan:', `${user.username}#${user.discriminator} (${user.id})`)
     .addField('Banlayan:', `${message.author.username}#${message.author.discriminator}`)
     .addField('Ban Sebebi', reason);
-  message.guild.channels.cache.get(db.fetch(`banlog_${message.guild.id}`)).send(embed);
+  message.guild.channels.cache.get(db.fetch(`banlog.${message.guild.id}`)).send(embed);
 };
 
 exports.conf = {
