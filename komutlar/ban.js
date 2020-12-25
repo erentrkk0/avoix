@@ -36,7 +36,7 @@ if(!kanal) return message.channel.send(x2 + ` Ban kanalı ayarlı değil?!\nBilg
    member.send(`**NORİ BAN** sistemi ile ${message.guild.name} (${message.guild.id}) sunucusunda ${message.author} (${message.author.id}) tarafından ${reason} sebebiyle yasaklandın.`)
         member.ban(`${message.author.tag} tarafından ${reason}`)
                 message.channel.send(x + ` ${user.tag}, isimli kişi başarıyla yasaklandı.`)
-        const yasaklandı = new Discord.RichEmbed()
+        const yasaklandı = new Discord.MessageEmbed()
   .setAuthor(user.tag, user.avatarURL)
   .setDescription(`Bir kişi sunucudan yasaklandı!`)
   .addField(`**Yasaklanan kişi:**`, user, true)
