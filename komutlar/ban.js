@@ -1,65 +1,47 @@
 const Discord = require('discord.js');
-const moment = require('moment')
-const talkedRecently = new Set();
-const ayarlar = require('../ayarlar.json');
-const prefix = ayarlar.prefix;
+const db = require('quick.db')
+const client = new Discord.Client();
 
-exports.run = async (bot, message, args, client) => {
-  
-   var başarılı = ['**İŞTE BU!** <a:tickblack:792005111831724032>', '**SÜPER!** <a:tickblack:792005111831724032>', '**NASIL YAPTIN BUNU?!** <a:tickblack:792005111831724032>', '**MÜKEMMEL!** <a:tickblack:792005111831724032>', '**SEVDİM BUNU!** <a:tickblack:792005111831724032>', '**ŞİMDİ OLDU!** <a:tickblack:792005111831724032>'];
-   var x = başarılı[Math.floor(Math.random() * başarılı.length)];
-
-   var başarısız = ['**TÜH!** <a:hyr:792102922480779275>', '**OLMADI BU!** <a:hyr:792102922480779275>', '**HAY AKSİ!** <a:hyr:792102922480779275>', '**HADİ ORADAN!** <a:hyr:792102922480779275>', '**OLMADI YA!** <a:hyr:792102922480779275>', '**BÖYLE OLMAZ?!** <a:hyr:792102922480779275>', '**HADİ YA!** <a:hyr:792102922480779275>'];
-   var x2 = başarısız[Math.floor(Math.random() * başarısız.length)];
-  
-let db = require('quick.db')
-let data2 = await db.fetch(`ban.yetkilirole.${message.guild.id}`)
-if(!data2)  return message.channel.send(x2 + ` Ban yetkilisi rolünü bulamadım.\nBilgi almak için: a!ban-yetki-role`)
-let data3 = await db.fetch(`banlog.${message.guild.id}`)
-if(!data3)  return message.channel.send(x2 + ` Ban kanalını bulamadım.\nBilgi almak için: a!ban-log`)
-let yetkili = message.guild.roles.cache.get(data2)
-if(!yetkili) return message.channel.send(x2 + ` Ban yetkilisi ayarlı değil?!\nBilgi almak için: a!ban-yetki-role`)
-let kanal = message.guild.channels.cache.get(data3)
-if(!kanal) return message.channel.send(x2 + ` Ban kanalı ayarlı değil?!\nBilgi almak için: a!ban-log`)
-  
-
-   if (!message.member.roles.cache.has(`${yetkili.id}`)) return message.channel.send(`**${ayarlar.prefix}ban** isimli komutu kullanabilmek için ${yetkili} rolüne sahip olman gerekiyor.`)
-    let reason = args.slice(1).join(' ')
-    
-    if (!args[0]) return message.channel.send(x2 + ` Birini etiketlemeyi unuttun!`)
-    let user = message.mentions.users.first() || bot.users.get(args[0]) || message.guild.members.find(u => u.user.username.toLowerCase().includes(args[0].toLowerCase())).user
-
-    if (!user) return message.channel.send(x2 + ` Etiketlediğin kişiyi sunucuda bulamadım. Bir daha dene.`)
-    let member = message.guild.member(user)
-    if (!member) return message.channel.send(x2 + ` Etiketlediğin kişiyi sunucuda bulamadım. Bir daha dene.`)
-    if (member.hasPermission("BAN_MEMBERS")) return message.channel.send(x2 + ` Bu kişiyi yasaklayamam.`)
-   member.send(`**NORİ BAN** sistemi ile ${message.guild.name} (${message.guild.id}) sunucusunda ${message.author} (${message.author.id}) tarafından ${reason} sebebiyle yasaklandın.`)
-        member.ban(`${message.author.tag} tarafından ${reason}`)
-                message.channel.send(x + ` ${user.tag}, isimli kişi başarıyla yasaklandı.`)
-        const yasaklandı = new Discord.MessageEmbed()
-  .setAuthor(user.tag, user.avatarURL)
-  .setDescription(`Bir kişi sunucudan yasaklandı!`)
-  .addField(`**Yasaklanan kişi:**`, user, true)
-.setColor(`#f3c7e1`)
-  .addField(`**Yasaklayan kişi:**`, `<@${message.author.id}>`, true)
-  .addField(`**Yasaklanma sebebi:**`, reason ? reason : 'Sebep belirtilmemiş.', true)
-    .setThumbnail(user.avatarURL)
-.setTimestamp()
-  .setFooter(`${message.channel.name} kanalında kullanıldı.`)
-kanal.send(yasaklandı)
+exports.run = async (client, message, args) => {
+ if(!message.member.roles.cache.has(db.fetch(`ban.etkilisi.{message.guild.id}`))) {
+    return message.channel.send("Bu Komutu Kullanabilmek İçin Gerekli Yetkiye Sahip Değilsin!");
    }
+  
+   const codework = await db.fetch(`banlog${message.guild.id}`)
+   if(codework == null) return message.channel.send('Lütfen BanLog Kanalı Ayarla!');
+  
+  let member = message.member
+  let guild = message.guild
+  let user = message.mentions.users.first();
+  let reason = args.slice(1).join(' ');
+  let banlogkanalı = await db.fetch(`banlog.${member.guild.id}`);
+  let banlog = member.guild.channels.cache.find(name => banlogkanalı);
+  if (message.mentions.users.size < 1) return message.reply('Kimi banlayacağını yazmalısın.');
+  if (reason.length < 1) return message.reply('Ban sebebini yazmalısın.');
+
+  if (!message.guild.member(user).bannable) return message.reply('Yetkili Kişileri Banlayamam.');
+  message.guild.members.ban(user);
+  message.channel.send(`${message.author} Ban İşlemi Başarılı!`)
+
+  const embed = new Discord.MessageEmbed()
+    .setColor(0x00AE86)
+    .setTimestamp()
+    .addField('Yapılan İşlem:','Ban')
+    .addField('Banlanan:', `${user.username}#${user.discriminator} (${user.id})`)
+    .addField('Banlayan:', `${message.author.username}#${message.author.discriminator}`)
+    .addField('Ban Sebebi', reason);
+  message.guild.channels.cache.get(db.fetch(`banlog_${message.guild.id}`)).send(embed);
+};
 
 exports.conf = {
   enabled: true,
   guildOnly: true,
-  aliases: ['yasakla', 'uçur'],
+  aliases: [],
   permLevel: 0
 };
 
 exports.help = {
   name: 'ban',
-  description: 'Etiketlediğiniz kişiyi sebebi ile sunucudan banlar.',
-	usage: 'ban kişi sebep',
-  kategori: '**MODERASYON**',
-  permLvl: '**Bulunmuyor.** (.ban-yetkilisi ayarla)'
-};
+  description: 'İstediğiniz kişiyi banlar.',
+  usage: 'ban [kullanıcı] [sebep]'
+}
