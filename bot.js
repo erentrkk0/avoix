@@ -448,5 +448,24 @@ client.on('message', async msg => {
   if (msg.content === `<@id>`) return msg.channel.send(`Prefixim a!`);
 });
 
+client.on('guildMemberAdd', async(member) => {
+ let mute = member.guild.roles.cache.find(r => r.name === "Susturuldu");
+let mutelimi = db.fetch(`muteli_${member.guild.id + member.id}`)
+let süre = db.fetch(`süre_${member.id + member.guild.id}`)
+if (!mutelimi) return;
+if (mutelimi == "muteli") {
+member.roles.add(mute.id)
+ 
+member.send("Muteliyken Sunucudan Çıktığın için Yeniden Mutelendin!")
+ setTimeout(function(){
+    // msg.channel.send(`<@${user.id}> Muten açıldı.`)
+db.delete(`muteli_${member.guild.id + member.id}`)
+    member.send(`<@${member.id}> Muten açıldı.`)
+    member.roles.remove(mute.id);
+  }, ms(süre));
+}
+})
+
+
 
 client.login(ayarlar.token);
