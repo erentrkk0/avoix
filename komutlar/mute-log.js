@@ -3,7 +3,7 @@ const db = require('quick.db');
 
 exports.run = async (client, message, args) => {
   
- if (!message.member.cache.has("MANAGE_MESSAGES")) {
+ if (!message.member.hasPermission("MANAGE_MESSAGES")) {
   const bilgi = new Discord.MessageEmbed()
   .setDescription('Bu komutu kullanabilmek için **Mesajları Yönet** yetkisine sahip olmanız gerek.')
   .setColor("0000A0")
