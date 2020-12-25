@@ -1,88 +1,80 @@
-const Discord = require('discord.js');
-const data = require('quick.db');
-const ms = require('ms');
+const Discord = require("discord.js");
+const ms = require("ms");
+const client = new Discord.Client();
+const db = require("quick.db");
+exports.run = async (receivedMessage,  msg, args) => {
+let user = msg.guild.member(msg.mentions.users.first() || msg.guild.members.cache.get(args[0]));
+        if (!msg.member.hasPermission("BAN_MEMBERS")) return msg.channel.send("Bu komudu kullanabilmek için `Ban` yetkisine sahip olmanız gerek.");
+ if (user.hasPermission("BAN_MEMBERS")) return msg.channel.send(`Hata! \`${user.tag}\` isimli kullanıcı bu sunucuda yetkili.`) 
+let log = await db.fetch(`mlog_${msg.guild.id}`) 
+  if (!log) return msg.channel.send("Ayarlı Bir Mute Log Kanalı Yok! Ayarlamak için \`-mute-log #kanal\` !")  
+var mod = msg.author
+var reason = args[1]
+ let sebep = args.slice(2).join(' ')
 
-exports.run = async (client, message, args) => {
-const logChannel = await data.fetch(`mute.log.${message.guild.id}`);
-const muteYetkili = await data.fetch(`muteyetki.role.${message.guild.id}`);
-if(!logChannel) return;
-if(!muteYetkili) return;
+  if (!user) return msg.reply('Kullanıcı Etiketlemedin')
+ if (!reason) return msg.reply('Süre Belirtmedin! Seçeneklerin : 1s/1m/1h/1d/1w')
+if (!sebep) return msg.reply('Sebep Belirtmedin!')
 
-const errorEmbed = new Discord.MessageEmbed()
-.setColor('#00001');
-const errorEmbed2 = new Discord.MessageEmbed()
-.setTitle('Bir hata oldu!');
+ 
+ 
+  let mute = msg.guild.roles.cache.find(r => r.name === "Susturuldu");
+          
+  let mutetime = args[1]
+if(!mute){
+      mute = await msg.guild.roles.create({
+        name: "Susturuldu",
+        color: "#818386",
+        permissions:[]
+      })
+      msg.guild.channels.cache.forEach(async (channel, id) => {
+        await channel.overwritePermissions(mute, {
+          SEND_MESSAGES: false,
+          ADD_REACTIONS: false
+        });
+      });
+  
+    }
+  
+  
+  await(user.roles.add(mute.id));
+msg.channel.send(``)
+  let mutezaman = args[1]
+.replace(`d`," Gün")
+.replace(`s`," Saniye")
+.replace(`h`," Saat")
+.replace(`m`," Dakika")
+.replace(`w`," Hafta")
+  msg.channel.send(`${user} Adlı Kişi , ${mutezaman} Susturuldu! Sunucudan Çıkarsa Bile Mutesi Devam edecek!`)
+db.set(`muteli_${msg.guild.id + user.id}`, 'muteli')
+db.set(`süre_${msg.mentions.users.first().id + msg.guild.id}`, mutetime)
+                         
+  const muteembed = new Discord.MessageEmbed()
+     	.setTitle('Ceza: Mute')
+    .setThumbnail(user.avatarURL||user.defaultAvatarURL)
+      .addField('Moderatör', `${mod}`,true)
+      .addField('Sebep', `\`${sebep}\``,true)
+      .addField('Kullanıcı', `<@${user.id}>`,true)
+      .addField('Süre',`\`${mutezaman}\``)
+  . setColor("RANDOM") 
+msg.guild.channels.get(log).send(muteembed)
 
-if(!message.member.permissions.has(muteYetkili)) return message.channel.send(errorEmbed.setDescription(`${message.guild.roles.cache.get(muteYetkili)} | Rolüne sahip olman gerekiyor.`));
-if(!args[0]) return message.channel.send(errorEmbed.setTitle('Bir hata oldu!').setDescription(`Kullanıcı etiketleyerek dener misin?
+  setTimeout(function(){
+db.delete(`muteli_${msg.guild.id + user.id}`)
+    user.removeRole(mute.id)
+ msg.channel.send(`<@${user.id}> Muten açıldı.`)
+  }, ms(mutetime));
 
-**Örnek olarak**:
-\`\`\`a!mute @üyeetiketi 1m merhaba
-a!mute 454293207443046412 1m merhaba\`\`\``));
-
-let member;
-if(message.mentions.members.first()) {
-member = message.mentions.members.first();
-} else if(args[0]) {
-member = message.guild.members.cache.get(args[0]);
-if(!member) return message.channel.send(errorEmbed.setTitle('Bir hata oldu!').setDescription(`Kullanıcı etiketleyerek dener misin?
-
-**Örnek olarak**:
-\`\`\`a!mute @üyeetiketi 1m merhaba
-a!mute 454293207443046412 1m merhaba\`\`\``));
 }
-
-if(message.author.id === member.id) return message.channel.send(new Discord.MessageEmbed().setColor('#9c5cb2').setTitle('Agaa beeeeeeeee!').setDescription(`O kadar yürekli olamazsın.. 🙄`))
-if(member.permissions.has('ADMINISTRATOR')) return message.channel.send(errorEmbed2.setDescription('Yönetici bir kullanıcıya karışamam!'));
-
-if(!args[1]) return message.channel.send(errorEmbed.setTitle('Bir hata oldu!')
-.setDescription(`${message.author} **Süre** Belirtmeyi unutma lütfen! \`1s & 1m & 1h & 1d\` kullanarak dener misin?
-
-**Örnek olarak**:
-\`\`\`a!mute @üyetiketi 1m merhaba\`\`\``));
-
-let cooldown = ms(args[1]);
-let reason;
-if(args[2]) reason = args[2];
-if(!args[2]) reason = 'Bir açıklama yok.';
-
-message.guild.channels.cache.filter(a => a.type === 'text').forEach(s => {
-s.overwritePermissions([{ id: member.id, deny: ['SEND_MESSAGES'] }]);
-});
-
-message.channel.send(new Discord.MessageEmbed().setDescription(`○ ${member} **kullanıcısı için mute verildi.**
-○ **Açıklama:** \`${reason}\`
-○ **Ceza Süre:** \`${args[1]}\``));
-
-message.guild.channels.cache.get(logChannel).send(new Discord.MessageEmbed()
-.setColor('#00001')
-.setTitle('Avonix - Chat Mute Sistem')
-.setDescription(`○ **Kullanan Yetkili:** \`${message.author.tag}\`
-○ **Kullanılan kişi:** \`${member.user.tag}\`
-○ **Açıklama:** \`${reason}\`
-○ **Ceza Süre:** \`${args[1]}\``)
-.setThumbnail(message.author.avatarURL() ? message.author.avatarURL({dynamic: true}) : 'https://cdn.discordapp.com/attachments/761314429589258315/762047392651411487/erentr1.jpg'));
-
-
-setTimeout(() => {
-
-message.guild.channels.cache.get(logChannel).send(new Discord.MessageEmbed()
-.setTitle('Avonix - Chat Mute Sistem')
-.setDescription(`○ ${member.user} **kullanıcısının chat mute süresi bitti!**`))
-
-message.guild.channels.cache.filter(a => a.type === 'text').forEach(s => {
-s.overwritePermissions([{ id: member.id, null: ['SEND_MESSAGES'] }]);
-});
-}, cooldown);
-
-};
 exports.conf = {
   enabled: true,
   guildOnly: true,
-  aliases: [],
+  aliases: ["sustur"],
   permLevel: 0
-}
+};
 
 exports.help = {
-  name: 'mute'
+  name: "mute",
+  description: "",
+  usage: ""
 };
